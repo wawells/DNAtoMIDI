@@ -9,6 +9,7 @@ class DNAtoMidi:
         self.tempo = None
         self.toParse = None
         self.filename = filename
+        self.time = 0
 
     def str2Int(self, letter):
         if letter == "A":
@@ -33,13 +34,13 @@ class DNAtoMidi:
         try:
             with open(self.filename, 'r') as file:
                 content = file.read()
-                #do something with content here
                 for letter in content:
                     curNote = self.str2Int(letter)
                     curVel = self.getVelocity
-                    curTime = self.getTime
-                    #may need to start time at 0 and work up from there. How can we do this?
-
+                    curTime = self.time
+                    
+                    #create msg start here using time
+                    #add time using math.random, then create msg end
                     
                     
         except FileNotFoundError:
