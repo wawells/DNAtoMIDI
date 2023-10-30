@@ -10,43 +10,49 @@ class DNAtoMidi:
         self.toParse = None
         self.filename = filename
         self.time = 0
+        self.mid = MidiFile()
+        self.track = MidiTrack()
+        self.mid.tracks.append(self.track)
 
-    def str2Int(self, letter):
-        if letter == "A":
+    def str2Int(self, char):
+        if char == "A":
             val = 69
-        elif letter == "G":
+        elif char == "G":
             val = 60
-        elif letter == "C":
+        elif char == "C":
             val = 64
-        elif letter == "T":
+        elif char == "T":
             val = 67
         else:
-            print("Invalid letter in str2Int")
+            val = 50
         return val
     
-    def getTime(self):
-        return random.randint(1, 3000)
-    
     def getVelocity(self):
-        return random.randint(1, 100)
+        return random.randint(1, 127)
 
     def parseFile(self):
         try:
             with open(self.filename, 'r') as file:
                 content = file.read()
-                for letter in content:
-                    curNote = self.str2Int(letter)
-                    curVel = self.getVelocity
-                    curTime = self.time
+                for char in content:
+                    if not char.isspace():
+                        curNote = self.str2Int(char)
+                        curVel = self.getVelocity()
+
+                        note_on = Message('note_on', note = curNote, velocity = curVel, time = self.time)
+                        self.track.append(note_on)
+
+                        self.time += random.randint(1, 500)
+
+                        note_off = Message('note_off', note = curNote, velocity = curVel, time = self.time)
+                        self.track.append(note_off)
                     
-                    #create msg start here using time
-                    #add time using math.random, then create msg end
-                    
+                self.mid.save('output.mid')
                     
         except FileNotFoundError:
             print(f"File '{self.filename}' not found.")
         except Exception as e:
-            print(f"An error occurred while reading the file {str(e)}")
+            print(f"An error occurred while reading the file: {str(e)}")
 
     def toString(self):
         print("track number: " + str(self.trackNum))
